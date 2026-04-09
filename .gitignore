@@ -1,0 +1,11 @@
+.env
+config_bdd.php 
+/uploads/
+/images_test/
+*.log
+error_log
+/vendor/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

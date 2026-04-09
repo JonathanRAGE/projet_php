@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <title>Liste des Films</title>
+    </head>
+    <body>
+        <?php
+        include 'connection.php';
+        include 'class_film.php'; 
+        
+        $film = new film(); 
+        
+
+        if (isset($_GET['start'])) {
+            $start = intval($_GET['start']);
+        } else {
+            $start = 0;
+        }
+        
+   
+        $films = $film->findall($pdo, $start);
+        ?>    
+        
+        <h1>Liste des films</h1>
+        <a href="film_form.php?action=new&">Ajouter un nouveau film</a>
+        
+        <br><br>
+        <label for="barreRecherche"><strong>Rechercher :</strong></label>
+        <input type="text" id="barreRecherche" placeholder="Tapez le début du titre..." style="width: 300px; padding: 5px;">
+        <br><br>
+
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titre</th>
+                    <th>Année</th>
+                    <th>Genre</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="resultatsFilms">
+                <?php foreach ($films as $j): ?>
+                    <tr>
+                        <td><?= $j['id_film'] ?></td>
+                        <td><?= $j['titre'] ?></td>
+                        <td><?= $j['date_sortie'] ?></td>
+                        <td><?= $j['genre'] ?></td>
+                        <td>
+                            <a href="film_form.php?action=edit&id=<?= $j['id_film'] ?>">Modifier</a>
+                            <a href="film_supprimer.php?id=<?= $j['id_film'] ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce film ?');">Supprimer</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5">
+                        <?php if ($start > 0): ?>
+                            <a href="film_list.php?start=<?= $start - 3 ?>">Précédent</a>
+                            |
+                        <?php endif; ?>
+                        
+                        <a href="film_list.php?start=<?= $start + 3 ?>">Suivant</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>       
+
+        <script>
+            const barre = document.getElementById('barreRecherche');
+            const zoneResultats = document.getElementById('resultatsFilms');
+
+            barre.addEventListener('input', function() {
+                let texte = this.value;
+
+                if (texte.length > 0) {
+                    
+                    fetch('recherche.php?q=' + encodeURIComponent(texte))
+                        .then(response => response.text())
+                        .then(html => {
+                            zoneResultats.innerHTML = html;
+                        });
+                } else {
+                   
+                    window.location.reload();
+                }
+            });
+        </script>
+    </body>
+</html>
