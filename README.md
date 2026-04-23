@@ -1,4 +1,3 @@
-Voici un README court et efficace pour ton projet PHP :
 
 🐘 Projet PHP
 📝 Présentation
